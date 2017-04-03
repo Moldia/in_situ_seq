@@ -1,4 +1,4 @@
-This repository contains scripts for in situ sequencing analysis.
+This repository contains scripts for in situ sequencing processing pipeline.
 Mats Nilsson Lab, Stockholm University
 Xiaoyan, 2017
 
