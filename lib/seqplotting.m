@@ -1,0 +1,79 @@
+function seqplotting(decodedir, taglist, qinput, pinput)
+% plotting for in situ sequencing
+% input from Sequencing script
+% Xiaoyan, 2017
+
+
+drawnow
+% load decoding result file
+if ~strcmp(decodedir(end), filesep)
+    decodedir = [decodedir filesep];
+end
+
+if pinput.plot_reads_beforeQT_YN || pinput.plot_ref_general_stain
+    decodefile = [decodedir 'beforeQT_details.csv'];
+else
+    decodefile = [decodedir 'QT_' num2str(qinput.quality_threshold) '_' num2str(qinput.general_stain_threshold) '_details.csv'];
+end
+
+[name, pos] = getinsitudata(decodefile);
+[uniName, ~, idxName] = unique(name);
+
+% taglist and symbol
+if ischar(taglist)
+    if isempty(taglist)
+        plotname = uniName;
+        plotname = plotname(~strcmp(plotname, 'NNNN'));
+    else
+        taglist = importdata(taglist);
+        taglist = cellfun(@(v) strsplit(v, ','), taglist, 'uni', 0);
+        taglist = reshape([taglist{:}], length(taglist{1}), [])';
+        plotname = taglist(:,2);
+    end        
+else
+    [taglist, isRandSym] = formattaglist(taglist);
+    taglist = taglist(:,[false true ~isRandSym]);
+    plotname = taglist(:,1);
+end
+
+% take only genes that are actually detected
+tempidx = find(ismember(plotname, uniName));
+plotname = plotname(tempidx);
+[plotname, idx] = unique(plotname, 'stable');
+idx = tempidx(idx);
+
+% take gene-corresponding symbols if provided, otherwise use random list
+try
+    sym = taglist(idx, 3);
+catch
+    sym = repmat(symlist, ceil(length(plotname)/length(symlist)), 1);
+    sym = sym(1:length(plotname));
+end
+
+if ~pinput.exclude_NNNN_YN
+    plotname = [plotname; {'NNNN'}];
+    sym = [sym; {'ch'}];
+end
+
+% start plotting
+if pinput.I_want_to_plot_on_white_backgound
+    plotonblank;
+else
+    I = imread(pinput.background_image);
+    figure; imshow(I, [])
+    pos = correctcoord(pos, pinput.scale);
+end
+
+hold on;
+if pinput.plot_ref_general_stain
+    plot(pos(:,1), pos(:,2), '.');
+    legend({'all blobs'}, 'color', [.6 .6 .6]);
+else
+    for i = 1:length(plotname)
+        subreads = idxName == find(strcmp(plotname{i}, uniName));
+        plot(pos(subreads,1), pos(subreads,2), sym{i});
+    end
+    legend(plotname, 'color', [.6 .6 .6]);
+end
+
+end
