@@ -5,12 +5,12 @@ Taglist can take both csv file (recommended) and MATLAB function.
 Bar plot "read count" showing reads sorted based on frequency, but all expected reads have higher ranking than unexpected reads.
 Barcode list file, intensity reading file (from Cellprofiler) and tile position file (from Tiling module of Sequencing_v3) for SlideA data are provided as examples.
 
-Removed:
-Automatic saving of all variables at workspace.
-Analysis before threshold module, and all related scripts and functions.
-
 Changed:
 Output file "gene_n_count" has the same gene order as in the input taglist.
 Bar plot "gene count" has all genes in the UItable sorted alphabetically. 
 Output file "details" always includes parent cell, min_anchor, min_quality and min_align.
 Generally improved performance.
+
+Removed:
+Automatic saving of all variables in the workspace.
+Analysis before threshold module, and all related scripts and functions.
