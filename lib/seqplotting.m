@@ -31,18 +31,21 @@ if ischar(taglist)
         plotname = taglist(:,2);
     end        
 else
-    [taglist, isRandSym] = formattaglist(taglist);
-    taglist = taglist(:,[false true ~isRandSym]);
+    [taglist, isRandomSym] = formattaglist(taglist);
+    taglist = taglist(:,[false true ~isRandomSym]);
     plotname = taglist(:,1);
 end
 
 % take only genes that are actually detected
 tempidx = find(ismember(plotname, uniName));
 plotname = plotname(tempidx);
-[plotname, idx] = unique(plotname, 'stable');
+
+% remove name duplicates in taglist
+plotnameOriginalOrder = unique(plotname, 'stable');
+[plotname, idx] = unique(plotname);
 idx = tempidx(idx);
 
-% take gene-corresponding symbols if provided, otherwise use random list
+% prepare symbol if not provided
 try
     sym = taglist(idx, 3);
 catch
@@ -50,17 +53,20 @@ catch
     sym = sym(1:length(plotname));
 end
 
+% add NNNN to legend as well as to symbol
 if ~pinput.exclude_NNNN_YN
     plotname = [plotname; {'NNNN'}];
+    plotnameOriginalOrder = [plotnameOriginalOrder; {'NNNN'}];
     sym = [sym; {'ch'}];
 end
 
 % start plotting
+figure; 
 if pinput.I_want_to_plot_on_white_backgound
     plotonblank;
 else
     I = imread(pinput.background_image);
-    figure; imshow(I, [])
+    imshow(I, [])
     pos = correctcoord(pos, pinput.scale);
 end
 
@@ -74,6 +80,7 @@ else
         plot(pos(subreads,1), pos(subreads,2), sym{i});
     end
     legend(plotname, 'color', [.6 .6 .6]);
+    update_legend(gca, plotnameOriginalOrder);
 end
 
 end
