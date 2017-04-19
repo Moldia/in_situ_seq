@@ -32,8 +32,8 @@ if ischar(taglist)
     end        
 else
     [taglist, isRandomSym] = formattaglist(taglist);
-    taglist = taglist(:,[false true ~isRandomSym]);
-    plotname = taglist(:,1);
+    taglist = taglist(:,[true true ~isRandomSym]);
+    plotname = taglist(:,2);
 end
 
 % take only genes that are actually detected
@@ -45,7 +45,7 @@ plotnameOriginalOrder = unique(plotname, 'stable');
 [plotname, idx] = unique(plotname);
 idx = tempidx(idx);
 
-% prepare symbol if not provided
+% prepare symbols if not provided
 try
     sym = taglist(idx, 3);
 catch
@@ -53,7 +53,7 @@ catch
     sym = sym(1:length(plotname));
 end
 
-% add NNNN to legend as well as to symbol
+% add NNNN to legend as well as to symbols
 if ~pinput.exclude_NNNN_YN
     plotname = [plotname; {'NNNN'}];
     plotnameOriginalOrder = [plotnameOriginalOrder; {'NNNN'}];
