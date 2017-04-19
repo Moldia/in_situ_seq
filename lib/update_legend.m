@@ -1,4 +1,4 @@
-function update_legend(ah, plotnameOrdered)
+function update_legend(ah, plotnameOrdered, symbols)
 % reorder entries in legend and set visibility of line objects according to
 % the given names 
 % Xiaoyan, 2017
@@ -22,6 +22,10 @@ for i = 1:length(plotnameOrdered)
     if ~isempty(l)
         h(j) = gc(l);
         h(j).Visible = 'On';
+        if nargin > 2
+            h(j).Marker = symbols{i}(2);
+            h(j).Color = symbols{i}(1);
+        end
         j=j+1;
     end
 end
@@ -33,6 +37,7 @@ for i = 1:length(other_h)
 end
 
 % new legend
-legend(h(:), plotnameOrdered, 'color', [.6 .6 .6]);
+legendnames = plotnameOrdered(ismember(plotnameOrdered, plotname));
+legend(h(:), legendnames, 'color', [.6 .6 .6]);
 
 end
