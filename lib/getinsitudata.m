@@ -9,7 +9,7 @@ switch length(varargin)
     case 1
         colName = varargin{1};
         colPos = 1;
-    case 2
+    otherwise
         colName = varargin{1};
         colPos = varargin{2};
 end
