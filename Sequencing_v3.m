@@ -48,12 +48,12 @@ run_Plotting_Global_YN = 1;
 %----------------------------
 % Threshold_Sequencing
     q.quality_threshold = 0.45;        
-    q.general_stain_threshold = 0.0001;
+    q.general_stain_threshold = 0;
 %----------------------------
 % Plotting_global_Sequencing
     p.background_image = '..\AlignedStitched_20%.tif'; 
         p.scale = 0.2;		% image scale
-    p.I_want_to_plot_on_white_backgound = 0;
+    p.I_want_to_plot_on_white_backgound = 1;
     % options
     p.exclude_NNNN_YN = 0;
     p.plot_reads_beforeQT_YN = 0;

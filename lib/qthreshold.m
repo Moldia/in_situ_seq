@@ -23,6 +23,9 @@ headera = find(...
 toinclude = decodedata(:,headerq-2) > input.quality_threshold &...
     decodedata(:,headera-2) > input.general_stain_threshold;
 decodedata = decodedata(toinclude,:);
+if isempty(decodedata)
+    error('No read above quality and general stain threshold.')
+end
 textdata = textdata(toinclude,:);
 
 % expected barcode
