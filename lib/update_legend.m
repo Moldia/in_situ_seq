@@ -41,6 +41,6 @@ end
 
 % new legend
 legendnames = plotnameOrdered(ismember(plotnameOrdered, plotname));
-legend(h(:), legendnames, 'color', [.6 .6 .6]);
+legend(h(:), legendnames, 'color', [.6 .6 .6], 'location', 'NorthEastOutside');
 
 end

@@ -154,22 +154,22 @@ hybMinProps = hybMinProps(toinclude,:);
 propsPerBase = propsPerBase(toinclude,:,:);
 
 % gene name
-[uniNum, ~, idxNum] = unique(seqnum);
-countNum = hist(idxNum, length(uniNum));
-uniRead = cellfun(@(v) find(v==expectedNum), num2cell(uniNum), 'uni', 0);
-unexpected = cellfun(@isempty, uniRead);
-uniName = cell(length(uniNum),1);
-uniName(unexpected) = {'NNNN'};
-uniName(~unexpected) = genes([uniRead{~unexpected}]);
-uniRead = num2barcode(uniNum);
+[uNums, ~, idxNum] = unique(seqnum);
+cNums = hist(idxNum, length(uNums));
+uReads = cellfun(@(v) find(v==expectedNum), num2cell(uNums), 'uni', 0);
+unexpected = cellfun(@isempty, uReads);
+uNames = cell(length(uNums),1);
+uNames(unexpected) = {'NNNN'};
+uNames(~unexpected) = genes([uReads{~unexpected}]);
+uReads = num2barcode(uNums);
 
 % find unexpected homomer reads
 idxHomo = findhomomer_num(seqnum, expectedNum);
 
 tic
 Name = cell(length(seqnum),1);
-for i = 1:length(uniNum)
-    Name(idxNum==i) = uniName(i);
+for i = 1:length(uNums)
+    Name(idxNum==i) = uNames(i);
 end
 toc
 
@@ -179,10 +179,10 @@ tic
 countgene = histread(Name, idxHomo, 'beforeQT');
 
 % bar plot
-[~, idx] = sort(countNum, 'descend');
+[~, idx] = sort(cNums, 'descend');
 idx = [idx(~ismember(idx,find(unexpected))), idx(ismember(idx,find(unexpected)))];
-make_table_barplot(strcat(uniRead(idx), ': ', uniName(idx)),...
-    countNum(idx), 'Read count before QT');
+make_table_barplot(strcat(uReads(idx), ': ', uNames(idx)),...
+    cNums(idx), 'Read count before QT');
 
 % quality bar
 category = ones(length(seqnum), 1);
@@ -202,7 +202,7 @@ mkdir(outdir);
 % code_n_count file
 fid = fopen([outdir 'beforeQT_code_n_count.csv'], 'w');
 fprintf(fid,'Code,Count,GeneName\n');
-towrite = [uniRead, num2cell(countNum'), uniName]';
+towrite = [uReads, num2cell(cNums'), uNames]';
 fprintf(fid, '%s,%d,%s\n', towrite{:});
 fclose(fid);
 
@@ -223,7 +223,7 @@ fclose(fid);
 % details
 fid = fopen([outdir 'beforeQT_details.csv'], 'w');
 fprintf(fid, 'Read,Gene,PosX,PosY,ParentCell,Tile,MinAnchor,MinQuality,MinAlign\n');
-towrite = [uniRead(idxNum), Name, num2cell(propsReads)]';
+towrite = [uReads(idxNum), Name, num2cell(propsReads)]';
 fprintf(fid, ['%s,%s,', lineformat('%d', size(propsReads,2))], towrite{:});
 fclose(fid);
 

@@ -17,12 +17,12 @@ else
 end
 
 [name, pos] = getinsitudata(decodefile);
-[uniName, ~, idxName] = unique(name);
+[uNames, ~, idxName] = unique(name);
 
 % taglist and symbol
 if ischar(taglist)
     if isempty(taglist)
-        plotname = uniName;
+        plotname = uNames;
         plotname = plotname(~strcmp(plotname, 'NNNN'));
     else
         taglist = importdata(taglist);
@@ -37,7 +37,7 @@ else
 end
 
 % take only genes that are actually detected
-tempidx = find(ismember(plotname, uniName));
+tempidx = find(ismember(plotname, uNames));
 plotname = plotname(tempidx);
 
 % remove name duplicates in taglist
@@ -54,7 +54,7 @@ catch
 end
 
 % add NNNN to legend as well as to symbols
-if ~pinput.exclude_NNNN_YN
+if ~pinput.exclude_NNNN_YN && ismember('NNNN', uNames)
     plotname = [plotname; {'NNNN'}];
     plotnameOriginalOrder = [plotnameOriginalOrder; {'NNNN'}];
     sym = [sym; {'ch'}];
@@ -76,7 +76,7 @@ if pinput.plot_ref_general_stain
     legend({'all blobs'}, 'color', [.6 .6 .6]);
 else
     for i = 1:length(plotname)
-        subreads = idxName == find(strcmp(plotname{i}, uniName));
+        subreads = idxName == find(strcmp(plotname{i}, uNames));
         plot(pos(subreads,1), pos(subreads,2), sym{i});
     end
     legend(plotname, 'color', [.6 .6 .6]);

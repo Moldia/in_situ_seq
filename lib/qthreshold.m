@@ -26,20 +26,24 @@ decodedata = decodedata(toinclude,:);
 textdata = textdata(toinclude,:);
 
 % expected barcode
-[uniTag, idxtag1, idxTag] = unique(textdata(:,1));
-countTag = hist(idxTag, 1:length(uniTag));
-[uniName, ~, idxName] = unique(textdata(:,2));
-TagName = uniName(idxName(idxtag1));
-idxnameNNNN = strcmp(uniName, 'NNNN');
-unexpected = idxName(idxtag1)==find(idxnameNNNN);
-idxHomo = findhomomer_read(textdata(:,1), uniTag(~unexpected));
+[uTags, idxtag1, idxTag] = unique(textdata(:,1));
+cTag = hist(idxTag, 1:length(uTags));
+[uNames, ~, idxName] = unique(textdata(:,2));
+TagName = uNames(idxName(idxtag1));
+idxnameNNNN = strcmp(uNames, 'NNNN');
+try
+    unexpected = idxName(idxtag1)==find(idxnameNNNN);
+catch
+    unexpected = false(numel(uTags), 1);    % no NNNN
+end
+idxHomo = findhomomer_read(textdata(:,1), uTags(~unexpected));
 
 % figures
 countgene = histread(textdata(:,2), idxHomo, ['QT-' num2str(input.quality_threshold)]);
-[~, idx] = sort(countTag, 'descend');
+[~, idx] = sort(cTag, 'descend');
 idx = [idx(~ismember(idx, find(unexpected))), idx(ismember(idx, find(unexpected)))];
-make_table_barplot(strcat(uniTag(idx), ': ', TagName(idx)),...
-    countTag(idx), ['Read count QT-' num2str(input.quality_threshold)]);
+make_table_barplot(strcat(uTags(idx), ': ', TagName(idx)),...
+    cTag(idx), ['Read count QT-' num2str(input.quality_threshold)]);
 drawnow;
 
 disp('writing files..');
@@ -49,7 +53,7 @@ outprefix = ['QT_' num2str(input.quality_threshold) '_' num2str(input.general_st
 % code_n_count file
 fid = fopen([decodedir outprefix '_code_n_count.csv'], 'w');
 fprintf(fid,'Code,Count,GeneName\n');
-towrite = [uniTag, num2cell(countTag'), TagName]';
+towrite = [uTags, num2cell(cTag'), TagName]';
 fprintf(fid, '%s,%d,%s\n', towrite{:});
 fclose(fid);
 

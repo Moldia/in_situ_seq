@@ -1,12 +1,10 @@
-function idxHomomer = findhomomer_read(readlist, expTags, varargin)
+function idxHomomer = findhomomer_read(readlist, expTags, code)
 % find homomer (unexpected reads) indeces
 % Xiaoyan, 2017
 
 
-if isempty(varargin)
+if nargin < 3
     code = {'A' 'C' 'G' 'T'};
-else
-    code = varargin{1};
 end
 
 % possible homoemrs
