@@ -1,4 +1,5 @@
 function tileimage(im, tilesize, outdir)
+% tileimage(im, tilesize, outdir)
 % create non-overlapping image tiles
 % Xiaoyan, 2017
 

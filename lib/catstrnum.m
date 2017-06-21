@@ -11,3 +11,12 @@ end
 strnum = strcat(str, numstr);
 
 end
+
+function padded = paddigits(oriNum, ndigits)
+
+padded = num2str(oriNum);
+while length(padded) < ndigits
+    padded = ['0' padded];
+end
+
+end

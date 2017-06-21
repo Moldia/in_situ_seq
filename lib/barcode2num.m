@@ -1,22 +1,22 @@
-function [numlist, nummatrix] = barcode2num(letterlist, varargin)
+function [numlist, nummatrix] = barcode2num(letterlist, letters)
+% [numlist, nummatrix] = barcode2num(letterlist, letters)
 % change the barcode letters to numbers (all same length)
 % Xiaoyan, 2017
 
 
-if isempty(varargin)
-    letters = {'A','C','G','T'};
-else
-    letters = varargin{1};
+if nargin < 2
+    letters = {'A', 'C', 'G', 'T'};
 end
 
 if isempty(letterlist)
     numlist = [];
-    nummatrix = [];   
-else
-    
+    nummatrix = [];
+else    
     if ~iscell(letterlist)
         letterlist = {letterlist};
     end
+    
+    letterlist = letterlist(:);
     nHybs = length(letterlist{1});
     
     nummatrix = cell2mat(cellfun(@base2num, letterlist, 'uni', 0));
@@ -40,7 +40,5 @@ end
             end
         end
     end
-
-
 
 end

@@ -1,4 +1,5 @@
 function im = padimg(im, deltaX, deltaY, varargin)
+% im = padimg(im, deltaX, deltaY, varargin)
 % pad image with zeros
 % if varargin not specified, pad right and lower
 % Xiaoyan, 2017

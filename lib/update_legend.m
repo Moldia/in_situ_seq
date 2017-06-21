@@ -1,4 +1,5 @@
 function update_legend(ah, plotnameOrdered, symbols, symsize)
+% update_legend(ah, plotnameOrdered, symbols, symsize)
 % reorder entries in legend and set visibility of line objects according to
 % the given names 
 % Xiaoyan, 2017
