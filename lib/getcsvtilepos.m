@@ -1,4 +1,5 @@
 function startpos = getcsvtilepos(csvfile)
+% startpos = getcsvtilepos(csvfile)
 % get tile starting positions from CP input file
 % Xiaoyan, 2017
 

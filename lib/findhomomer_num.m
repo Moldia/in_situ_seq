@@ -1,5 +1,6 @@
-function idxHomomer = findhomomer_num(numlist, expectednum, varargin)
-% find homomer (unexpected reads) indeces
+function iHomomer = findhomomer_num(numlist, expectednum, varargin)
+% idxHomomer = findhomomer_num(numlist, expectednum, varargin)
+% find homomer (unexpected reads) indices
 % Xiaoyan, 2017
 
 nHybs = length(num2str(numlist(1)));
@@ -20,11 +21,11 @@ end
 % exclude when homomer reads are one of expected reads
 homomer = homomer(~ismember(homomer, expectednum));
 
-idxHomomer = [];
+iHomomer = [];
 for i = 1:length(homomer)
     idxhomo = find(numlist == homomer(i));
-    idxHomomer = [idxHomomer; idxhomo];
+    iHomomer = [iHomomer; idxhomo];
 end
-idxHomomer = sort(idxHomomer);
+iHomomer = sort(iHomomer);
 
 end

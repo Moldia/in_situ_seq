@@ -1,8 +1,10 @@
 function [threshold, N] = qualitybar...
     (lower, upper, category, quality, varargin)
-% Draw a bar series to show proportions of 
+% [threshold, N] = qualitybar...
+%     (lower, upper, category, quality, varargin)
+% draw a bar series to show proportions of 
 % expected/unexpected/homomer/below QT at different QTs
-% At the same time, give a table with read counts
+% and give a table with read counts
 %
 % barQuality new
 % Xiaoyan, 2014-11-30

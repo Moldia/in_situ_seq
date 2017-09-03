@@ -1,4 +1,5 @@
 function [taglist, isRandSym] = formattaglist(taglist)
+% [taglist, isRandSym] = formattaglist(taglist)
 % input: old .m style taglist, output: 3-column taglist with symbols
 % Xiaoyan, 2017
 

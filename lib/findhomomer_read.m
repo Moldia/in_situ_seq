@@ -1,5 +1,6 @@
-function idxHomomer = findhomomer_read(readlist, expTags, code)
-% find homomer (unexpected reads) indeces
+function iHomomer = findhomomer_read(readlist, expTags, code)
+% idxHomomer = findhomomer_read(readlist, expTags, code)
+% find homomer (unexpected reads) indices
 % Xiaoyan, 2017
 
 
@@ -16,11 +17,11 @@ homomer = homomer(~ismember(homomer, expTags));
 homomer = cellfun(@(v) find(strcmp(v, uniRead)), homomer, 'uni', 0);
 homomer = [homomer{:}];
 
-idxHomomer = [];
+iHomomer = [];
 for i = 1:length(homomer)
     idxhomo = find(idxRead == homomer(i));
-    idxHomomer = [idxHomomer; idxhomo];
+    iHomomer = [iHomomer; idxhomo];
 end
-idxHomomer = sort(idxHomomer);
+iHomomer = sort(iHomomer);
 
 end

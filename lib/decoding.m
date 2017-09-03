@@ -1,4 +1,5 @@
 function decoding(input)
+% decoding(input)
 % decoding for in situ sequencing analysis
 % input from Sequencing script
 % Xiaoyan, 2017

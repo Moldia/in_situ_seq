@@ -1,4 +1,5 @@
 function qthreshold(decodedir, input)
+% qthreshold(decodedir, input)
 % quality thresholding for in situ sequencing
 % input from Sequencing script
 % Xiaoyan, 2017

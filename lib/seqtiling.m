@@ -1,4 +1,5 @@
 function seqtiling(input)
+% seqtiling(input)
 % re-tile images for in situ sequencing image analysis
 % input from Sequencing script
 % Xiaoyan, 2017

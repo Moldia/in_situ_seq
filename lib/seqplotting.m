@@ -1,4 +1,5 @@
 function seqplotting(decodedir, taglist, qinput, pinput)
+% seqplotting(decodedir, taglist, qinput, pinput)
 % plotting for in situ sequencing
 % input from Sequencing script
 % Xiaoyan, 2017

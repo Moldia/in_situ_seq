@@ -1,4 +1,5 @@
 function [name, pos, varargout] = getinsitudata(filename, varargin)
+% [name, pos, varargout] = getinsitudata(filename, varargin)
 % get transcript info from decoded file
 % Xiaoyan, 2107
 

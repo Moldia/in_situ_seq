@@ -1,4 +1,5 @@
 function posNew = correctcoord(pos,resize_factor)
+% posNew = correctcoord(pos,resize_factor)
 % correct coordinates for plotting and image processing
 % Xiaoyan, 2017
 

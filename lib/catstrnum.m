@@ -1,4 +1,5 @@
 function strnum = catstrnum(str, numlist, varargin)
+% strnum = catstrnum(str, numlist, varargin)
 % concatenate string and a list of numbers
 % Xiaoyan, 2017
 

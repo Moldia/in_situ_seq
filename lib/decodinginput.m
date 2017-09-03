@@ -1,4 +1,5 @@
 function seqdata = decodinginput(inputfile, colChannels, colOthers)
+% seqdata = decodinginput(inputfile, colChannels, colOthers)
 % return sequencing data matrix from CP output
 % Xiaoyan 2014-11-28
 

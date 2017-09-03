@@ -1,5 +1,7 @@
 function [imdir, imfiles] = imfiles_in_grid(imfolder, imprefix, imsuffix,...
     ndigits, ntiles, varargin)
+% [imdir, imfiles] = imfiles_in_grid(imfolder, imprefix, imsuffix,...
+%     ndigits, ntiles, varargin)
 % return a cell matrix with each cell containing tiled image file name
 % Xiaoyan, 2017
 

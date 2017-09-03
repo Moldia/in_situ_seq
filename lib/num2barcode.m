@@ -1,4 +1,5 @@
 function barcode = num2barcode(numlist, varargin)
+% barcode = num2barcode(numlist, varargin)
 % change list of numbers to list of barcode letters (all same length)
 % default letter list: A, C, G, T, custom list can be used
 % Xiaoyan, 2017

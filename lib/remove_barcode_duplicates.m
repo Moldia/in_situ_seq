@@ -1,4 +1,5 @@
 function [taglist, map_TagName] = remove_barcode_duplicates(taglist)
+% [taglist, map_TagName] = remove_barcode_duplicates(taglist)
 % input: 2- or 3-column taglist, check barcode duplicates
 % Xiaoyan, 2017
 

@@ -1,4 +1,5 @@
 function make_table_barplot(name, count, figname)
+% make_table_barplot(name, count, figname)
 % make a bar plot with a ui table
 % Xiaoyan, 2017
 
