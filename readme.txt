@@ -1,9 +1,9 @@
 This repository contains scripts for in situ sequencing processing pipeline.
 Mats Nilsson Lab, Stockholm University
-Xiaoyan Qian, 2017
+Xiaoyan Qian, 2018
 
 Download the repository, add lib to MATLAB path. 
 Except MATLAB, no additional Mathworks product is required.
-Tested on R2015a and R2016b.
+Tested on R2016b and R2018a.
 
-Sequencing_v3.m is the top-level script.
+InSituSequencing.m is the top-level script.

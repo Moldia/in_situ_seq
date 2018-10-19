@@ -1,6 +1,7 @@
 function tableCount = histread(name, varargin)
+% tableCount = histread(name, varargin)
 % plot the number of reads per gene name and ouput a table
-% Xiaoyan, 2017
+% Xiaoyan, 2018
 
 try
     idxHomo = varargin{1};
@@ -16,19 +17,19 @@ catch
 end
 
 % group reads with the same name tag
-[uniName, ~, idxName] = unique(name);
-idxnameNNNN = find(strcmp(uniName, 'NNNN'));
-idxnamehomo = find(strcmp(uniName, 'Homomer'));
-orderName = 1:length(uniName);
-orderName([idxnameNNNN, idxnamehomo]) = [];
-orderName = [orderName, idxnameNNNN, idxnamehomo];
+[uNames, ~, iName] = unique(name);
+iNNNN = find(strcmp(uNames, 'NNNN'));
+iHomo = find(strcmp(uNames, 'Homomer'));
+orderName = 1:length(uNames);
+orderName([iNNNN, iHomo]) = [];
+orderName = [orderName, iNNNN, iHomo];
 
-countName = hist(idxName, 1:length(uniName));
+countName = hist(iName, 1:length(uNames));
 countName = countName(orderName);
 
-tableCount = [uniName(orderName) num2cell(countName(:))];
+tableCount = [uNames(orderName) num2cell(countName(:))];
 
-make_table_barplot(uniName(orderName), countName, ['Gene count ' figname]);
+make_table_barplot(uNames(orderName), countName, ['Gene count ' figname]);
  
 
 end

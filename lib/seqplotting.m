@@ -1,24 +1,21 @@
 function seqplotting(decodedir, taglist, qinput, pinput)
 % seqplotting(decodedir, taglist, qinput, pinput)
 % plotting for in situ sequencing
-% input from Sequencing script
-% Xiaoyan, 2017
+% input from InSituSequencing script
+% Xiaoyan, 2018
 
 
 drawnow
-% load decoding result file
-if ~strcmp(decodedir(end), filesep)
-    decodedir = [decodedir filesep];
-end
 
 if pinput.plot_reads_beforeQT_YN || pinput.plot_ref_general_stain
-    decodefile = [decodedir 'beforeQT_details.csv'];
+    decodefile = fullfile(decodedir, 'beforeQT_details.csv');
 else
-    decodefile = [decodedir 'QT_' num2str(qinput.quality_threshold) '_' num2str(qinput.general_stain_threshold) '_details.csv'];
+    decodefile = fullfile(decodedir,...
+        ['QT_' num2str(qinput.quality_threshold) '_' num2str(qinput.general_stain_threshold) '_details.csv']);
 end
 
 [name, pos] = getinsitudata(decodefile);
-[uNames, ~, idxName] = unique(name);
+[uNames, ~, iName] = unique(name);
 
 % taglist and symbol
 if ischar(taglist)
@@ -77,7 +74,7 @@ if pinput.plot_ref_general_stain
     legend({'all blobs'}, 'color', [.6 .6 .6]);
 else
     for i = 1:length(plotname)
-        subreads = idxName == find(strcmp(plotname{i}, uNames));
+        subreads = iName == find(strcmp(plotname{i}, uNames));
         plot(pos(subreads,1), pos(subreads,2), sym{i});
     end
     legend(plotname, 'color', [.6 .6 .6]);

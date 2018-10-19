@@ -1,4 +1,4 @@
-function [imdir, imfiles] = imfiles_in_grid(imfolder, imprefix, imsuffix,...
+function [imdir, imfiles, imOrder] = imfiles_in_grid(imfolder, imprefix, imsuffix,...
     ndigits, ntiles, varargin)
 % [imdir, imfiles] = imfiles_in_grid(imfolder, imprefix, imsuffix,...
 %     ndigits, ntiles, varargin)
@@ -57,6 +57,7 @@ if ntiles(1)*ntiles(1) > 1
         imOrder = imOrder';
     end
 else
+    % one and only one tile in the file
     imOrder = 1;
 end
 

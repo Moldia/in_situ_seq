@@ -1,15 +1,15 @@
 function seqtiling(input)
 % seqtiling(input)
 % re-tile images for in situ sequencing image analysis
-% input from Sequencing script
-% Xiaoyan, 2017
+% input from InSituSequencing script
+% Xiaoyan, 2018
 
 
 nChannels = input.channel_end - input.channel_start + 1;
 nBases = input.base_end - input.base_start + 1;
 
-checkinput;
-checkimages;
+checkinput(input, nChannels, nBases)
+[ntilesX, ntilesY, padX, padY] = checkimages(input);
 
 % pad and tile images
 nImages = 0;
@@ -59,21 +59,21 @@ for b = input.base_start:input.base_end
     towrite = [towrite; [metadata, num2cell(repmat(b, ntilesX*ntilesY, 1)), perbase]];
 end
 
-% general stain
-cGeneral = find(ismember(input.channel_order,...
-    {'General_stain', 'general_stain', 'General_blob', 'general_blob',...
-    'General stain', 'general stain', 'General blob', 'general blob',...
-    'AF750', 'Cy7'}));
-if length(cGeneral) == 1
+% anchor stain
+cAnchor = find(ismember(lower(input.channel_order),...
+    {'general_stain', 'general_blob', 'anchor_stain', 'anchor_blob',...
+    'general stain', 'general blob', 'anchor stain', 'anchor blob',...
+    'anchor', 'general'}));
+if length(cAnchor) == 1
     towrite = [towrite,...
-        repmat([imdirs(:,input.base_start,cGeneral), imfiles], nBases, 1)];
-    header{cGeneral} = 'Spec_blob';
+        repmat([imdirs(:,input.base_start,cAnchor), imfiles], nBases, 1)];
+    header{cAnchor} = 'Spec_blob';
     header = [header, 'General_blob'];
 end
 
 % DAPI (from base1 only)
-cNuclei = find(ismember(input.channel_order,...
-    {'Nuclei','nuclei','DAPI','Hoechst'}));
+cNuclei = find(ismember(lower(input.channel_order),...
+    {'nuclei', 'dapi', 'hoechst'}));
 if length(cNuclei) == 1
     towrite(:,4+(cNuclei-1)*2+1,:) =...
         repmat(towrite(1:ntilesX*ntilesY,4+(cNuclei-1)*2+1), nBases, 1);
@@ -86,13 +86,13 @@ header = [strcat('Image_PathName_', header); strcat('Image_FileName_', header)];
 header = [{'Metadata_position','Tile_xPos','Tile_yPos','Hyb_step'}, reshape(header, 1, [])];
 
 % write file
-fid = fopen(fullfile(input.folder_image, [input.CSV_filename_prefix '.csv']), 'w');
+fid = fopen([input.CSV_filename_prefix '.csv'], 'w');
 fprintf(fid, lineformat('%s', length(header)), header{:});
 fprintf(fid, ['%d,%d,%d,%d,' lineformat('%s', length(header)-4)], towrite{:});
 fclose(fid);
 
         
-    function checkinput
+    function checkinput(input, nChannels, nBases)
         if nChannels<0 || nBases<0 || nChannels~=uint8(nChannels) || nBases~=uint8(nBases)
             error('Number of channels and bases must be positive integers.');
         end
@@ -103,7 +103,7 @@ fclose(fid);
         end
     end
 
-    function checkimages
+    function [ntilesX, ntilesY, padX, padY] = checkimages(input)
         imdimensions = zeros(input.base_end, input.channel_end, 2);
         disp('checking images..');
         for b = input.base_start:input.base_end

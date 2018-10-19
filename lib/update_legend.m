@@ -1,9 +1,16 @@
-function update_legend(ah, plotnameOrdered, symbols, symsize)
-% update_legend(ah, plotnameOrdered, symbols, symsize)
+function update_legend(ah, plotnameOrdered, symbols, symsize, legendlocation)
+% update_legend(ah, plotnameOrdered, symbols, symsize, legendlocation)
 % reorder entries in legend and set visibility of line objects according to
 % the given names 
-% Xiaoyan, 2017
+% Xiaoyan, 2018
 
+if nargin < 5
+    legendlocation = 'NorthEastOutside';
+end
+
+if ischar(plotnameOrdered)
+    plotnameOrdered = {plotnameOrdered};
+end
 
 % get all child line objects
 gc = get(ah, 'children');
@@ -34,14 +41,21 @@ for i = 1:length(plotnameOrdered)
     end
 end
 
+% new legend
+legendnames = plotnameOrdered(ismember(plotnameOrdered, plotname));
+legendnames = cellfun(@(v) strrep(v, '_', '\_'), legendnames, 'uni', 0);
+
 % set all others invisible
-other_h = setdiff(gc(allChildren), h);
+try
+    other_h = setdiff(gc(allChildren), h);
+    legend(h(:), legendnames, 'color', [.6 .6 .6], 'location', legendlocation);
+catch
+    other_h = gc(allChildren);
+    legend off;
+end
 for i = 1:length(other_h)
     other_h(i).Visible = 'Off';
 end
 
-% new legend
-legendnames = plotnameOrdered(ismember(plotnameOrdered, plotname));
-legend(h(:), legendnames, 'color', [.6 .6 .6], 'location', 'NorthEastOutside');
 
 end

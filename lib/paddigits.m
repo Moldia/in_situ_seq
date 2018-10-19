@@ -1,4 +1,5 @@
 function padded = paddigits(oriNum, ndigits)
+% padded = paddigits(oriNum, ndigits)
 % pad a number to given digits (string)
 % Xiaoyan, 2017
 

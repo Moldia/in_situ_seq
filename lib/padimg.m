@@ -1,7 +1,8 @@
-function im = padimg(im, deltaX, deltaY, varargin)
-% im = padimg(im, deltaX, deltaY, varargin)
+function im = padimg(im, deltaX, deltaY, sides)
+% im = padimg(im, deltaX, deltaY, sides)
 % pad image with zeros
-% if varargin not specified, pad right and lower
+% crop when deltaX or deltaY are smaller than zero
+% if sides not specified, pad right and lower
 % Xiaoyan, 2017
 
 
@@ -20,28 +21,26 @@ if deltaY > 0
     padY = zeros(deltaY, imsize(2)+deltaX, imsize(3));
 end
 
-try
-    side = varargin{1};
-catch
-    side = 'ES';
+if nargin < 4
+    sides = 'ES';
 end
 
 % pad/crop different side
-if strfind(side, 'E')
+if strfind(sides, 'E')
     try im = [im, padX];
     catch
         im = im(:,1:imsize(2)+deltaX,:);
     end
 end
 
-if strfind(side, 'W')
+if strfind(sides, 'W')
     try im = [padX, im];
     catch
         im = im(:,abs(deltaX)+1:end,:);
     end
 end
 
-if strfind(side, 'S')
+if strfind(sides, 'S')
     try im = [im; padY];
     catch errorm
         if strfind(errorm.identifier, 'dimensionMismatch')
@@ -53,7 +52,7 @@ if strfind(side, 'S')
     end
 end
 
-if strfind(side, 'N')
+if strfind(sides, 'N')
     try im = [padY; im];
     catch errorm
         if strfind(errorm.identifier, 'dimensionMismatch')

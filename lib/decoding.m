@@ -1,8 +1,8 @@
 function decoding(input)
 % decoding(input)
 % decoding for in situ sequencing analysis
-% input from Sequencing script
-% Xiaoyan, 2017
+% input from InSituSequencing script
+% Xiaoyan, 2018
 
 
 drawnow
@@ -15,7 +15,7 @@ if ischar(input.taglist)
         taglist = importdata(input.taglist);
         taglist = cellfun(@(v) strsplit(v, ','), taglist, 'uni', 0);
         taglist = reshape([taglist{:}], length(taglist{1}), [])';
-    end        
+    end
 else
     taglist = formattaglist(input.taglist);
 end
@@ -27,8 +27,8 @@ if input.abnormal_sequencing_YN
     seqorder = input.sequencing_order;
     seqorder(strfind(seqorder, '0')) = [];
     numseqorder = [];
-    for i = 1:length(seqorder)
-        numseqorder(i) = str2double(seqorder(i));
+    for iCell = 1:length(seqorder)
+        numseqorder(iCell) = str2double(seqorder(iCell));
     end
     taglist(:,1) = cellfun(@(v) v(numseqorder), taglist(:,1), 'uni', 0);
     readorder = 1:nHybs;
@@ -57,14 +57,14 @@ if floor(nBlobs) ~= nBlobs
 end
 
 % preallocate
-idBlob = zeros(nBlobs, 2);
-basecalling = zeros(nBlobs, nHybs);
+iBlob = zeros(nBlobs, 2);
+basecall = zeros(nBlobs, nHybs);
 maxChannel = zeros(nBlobs, nHybs);
 sumChannel = zeros(nBlobs, nHybs);
-oriChannel = zeros(nHybs, 4, nBlobs);
+originalChannel = zeros(nHybs, 4, nBlobs);
 anchor = zeros(nBlobs, nHybs);
 alignment = zeros(nBlobs, nHybs);
-idCell = zeros(nBlobs, 1);
+iCell = zeros(nBlobs, 1);
 globalpos = zeros(nBlobs, 2);
 
 % base-calling
@@ -76,103 +76,106 @@ fprintf('# tile\tnumber of blobs\n');
 
 for t = 1:max(seqdata(:,3))
     tiledata = seqdata(seqdata(:,3) == t,:);
-    nTileblobs = size(tiledata,1)/nHybs;
-    nCellsTile = max(tiledata(:,12));
+    nBlobsInTile = size(tiledata,1)/nHybs;
+    nCellsInTile = max(tiledata(:,12));
     
-    fprintf('%6d\t\t%6d\n', t, nTileblobs);
+    fprintf('%6d\t\t%6d\n', t, nBlobsInTile);
     
-    if nTileblobs
-        [~, idxhyb1, idxblob] = unique(tiledata(:,2));
-        [~, order] = sort(idxblob);
+    if nBlobsInTile
+        [~, idxHyb1, idxBlob] = unique(tiledata(:,2));
+        [~, order] = sort(idxBlob);
         
-        % blob index and tile ID
-        idBlob(startblob+1:startblob+nTileblobs, 1) =...
-            (1:nTileblobs)' + startblob;
-        idBlob(startblob+1:startblob+nTileblobs, 2) = t;
+        % blob index 
+        iBlob(startblob+1:startblob+nBlobsInTile, 1) =...
+            (1:nBlobsInTile)' + startblob;
+        
+        % tile ID
+        iBlob(startblob+1:startblob+nBlobsInTile, 2) = t;
         
         % max intensity and base-calling
         [maxint, maxidx] = max(tiledata(order,6:9), [], 2);
-        maxChannel(startblob+1:startblob+nTileblobs,:) = ...
-            (reshape(maxint, nHybs, nTileblobs))';
-        basecalling(startblob+1:startblob+nTileblobs,:) = ...
-            (reshape(maxidx, nHybs, nTileblobs))';
+        maxChannel(startblob+1:startblob+nBlobsInTile,:) = ...
+            (reshape(maxint, nHybs, nBlobsInTile))';
+        basecall(startblob+1:startblob+nBlobsInTile,:) = ...
+            (reshape(maxidx, nHybs, nBlobsInTile))';
         
         % original intensities
-        sumChannel(startblob+1:startblob+nTileblobs,:) = ...
-            reshape(sum(tiledata(order,6:9), 2), nHybs, nTileblobs)';
+        sumChannel(startblob+1:startblob+nBlobsInTile,:) = ...
+            reshape(sum(tiledata(order,6:9), 2), nHybs, nBlobsInTile)';
         temp = reshape(tiledata(order,6:9)', 4, nHybs, []);
         temp = permute(temp, [2, 1, 3]);
-        oriChannel(:,:,startblob+1:startblob+nTileblobs) = temp;
+        originalChannel(:,:,startblob+1:startblob+nBlobsInTile) = temp;
         
         % alignment and general stain
-        alignment(startblob+1:startblob+nTileblobs,:) = ...
-            (reshape(tiledata(order,5), nHybs, nTileblobs))';
-        anchor(startblob+1:startblob+nTileblobs,:) = ...
-            (reshape(tiledata(order,4),nHybs,nTileblobs))';
+        alignment(startblob+1:startblob+nBlobsInTile,:) = ...
+            (reshape(tiledata(order,5), nHybs, nBlobsInTile))';
+        anchor(startblob+1:startblob+nBlobsInTile,:) = ...
+            (reshape(tiledata(order,4),nHybs,nBlobsInTile))';
         
         % global coordinates
         try
-            globalpos(startblob+1:startblob+nTileblobs,:) =...
+            globalpos(startblob+1:startblob+nBlobsInTile,:) =...
                 bsxfun(@plus,...
                 tilepos(tilepos(:,1)==t,2:3),...
-                tiledata(idxhyb1,10:11));
+                tiledata(idxHyb1,10:11));
         catch
-            globalpos(startblob+1:startblob+nTileblobs,:) =...
-                tiledata(idxhyb1,10:11);
+            globalpos(startblob+1:startblob+nBlobsInTile,:) =...
+                tiledata(idxHyb1,10:11);
         end
         
         % parent cell
-        idCell(startblob+1:startblob+nTileblobs) = ...
-            tiledata(idxhyb1,12) + tiledata(idxhyb1,12)*startcell;        
+        iCell(startblob+1:startblob+nBlobsInTile) = ...
+            tiledata(idxHyb1,12) + tiledata(idxHyb1,12)*startcell;        
         
-        startblob = startblob+nTileblobs;
-        startcell = startcell+nCellsTile;
+        startblob = startblob + nBlobsInTile;
+        startcell = startcell + nCellsInTile;
     end
     
 end
 clear temp
 
 % remove '0' hybs as specified in sequencing order
-basecalling = basecalling(:,readorder);
+basecall = basecall(:,readorder);
 propsPerBase = cat(3, maxChannel, sumChannel, anchor, alignment);
 propsPerBase = propsPerBase(:,readorder,:);
 
 % bases into reads
-seqnum = zeros(size(basecalling,1),1);
+readsNum = zeros(size(basecall,1),1);
 for i = 1:length(readorder)
-    seqnum = seqnum + basecalling(:,i)*10^(length(readorder)-i);
+    readsNum = readsNum + basecall(:,i)*10^(length(readorder)-i);
 end
 
 %% sequencing quality
 quality = maxChannel./sumChannel;
-qualitycheck;
+[toinclude, propsReads, hybMinProps] = qualitycheck...
+    (input, quality, anchor, alignment, iCell, iBlob, globalpos);
+
 
 % all reads before QT
-seqnum = seqnum(toinclude);
+readsNum = readsNum(toinclude);
 propsReads = propsReads(toinclude,:);
-oriChannel = oriChannel(:,:,toinclude);
+originalChannel = originalChannel(:,:,toinclude);
 hybMinProps = hybMinProps(toinclude,:);
 propsPerBase = propsPerBase(toinclude,:,:);
 
-% gene name
-[uNums, ~, idxNum] = unique(seqnum);
-cNums = hist(idxNum, length(uNums));
-uReads = cellfun(@(v) find(v==expectedNum), num2cell(uNums), 'uni', 0);
-unexpected = cellfun(@isempty, uReads);
-uNames = cell(length(uNums),1);
+% reads and gene name
+[uReads, ~, iRead] = unique(readsNum);
+cRead = hist(iRead, length(uReads));
+iExpected = cellfun(@(v) find(v==expectedNum), num2cell(uReads), 'uni', 0);
+unexpected = cellfun(@isempty, iExpected);
+uNames = cell(length(uReads), 1);
 uNames(unexpected) = {'NNNN'};
-uNames(~unexpected) = genes([uReads{~unexpected}]);
-uReads = num2barcode(uNums);
+uNames(~unexpected) = genes([iExpected{~unexpected}]);
+uTags = num2barcode(uReads);
 
 % find unexpected homomer reads
-idxHomo = findhomomer_num(seqnum, expectedNum);
+idxHomo = findhomomer_num(readsNum, expectedNum);
 
-tic
-Name = cell(length(seqnum),1);
-for i = 1:length(uNums)
-    Name(idxNum==i) = uNames(i);
+disp('assigning gene names..');
+Name = cell(length(readsNum), 1);
+for i = 1:length(uTags)
+    Name(iRead==i) = uNames(i);
 end
-toc
 
 %% output figures and files
 disp('drawing figures..');
@@ -180,58 +183,54 @@ tic
 countgene = histread(Name, idxHomo, 'beforeQT');
 
 % bar plot
-[~, idx] = sort(cNums, 'descend');
+[~, idx] = sort(cRead, 'descend');
 idx = [idx(~ismember(idx,find(unexpected))), idx(ismember(idx,find(unexpected)))];
-make_table_barplot(strcat(uReads(idx), ': ', uNames(idx)),...
-    cNums(idx), 'Read count before QT');
+make_table_barplot(strcat(uTags(idx), ': ', uNames(idx)),...
+    cRead(idx), 'Read count before QT');
 
 % quality bar
-category = ones(length(seqnum), 1);
-category(ismember(idxNum, find(unexpected))) = 0;
+category = ones(length(readsNum), 1);
+category(ismember(iRead, find(unexpected))) = 0;
 category(idxHomo) = -1;
 [thres, count] = qualitybar(0, 1, category, propsReads(:,6));
 drawnow;
 toc
 
 disp('writing files..');
-outdir = input.output_directory;
-if ~strcmp(outdir(end), filesep)
-    outdir = [outdir filesep];
-end
-mkdir(outdir);
+mkdir(input.output_directory);
 
 % code_n_count file
-fid = fopen([outdir 'beforeQT_code_n_count.csv'], 'w');
+fid = fopen(fullfile(input.output_directory, 'beforeQT_code_n_count.csv'), 'w');
 fprintf(fid,'Code,Count,GeneName\n');
-towrite = [uReads, num2cell(cNums'), uNames]';
+towrite = [uTags, num2cell(cRead'), uNames]';
 fprintf(fid, '%s,%d,%s\n', towrite{:});
 fclose(fid);
 
 % gene_n_count
-fid = fopen([outdir 'beforeQT_gene_n_count.csv'], 'w');
+fid = fopen(fullfile(input.output_directory, 'beforeQT_gene_n_count.csv'), 'w');
 fprintf(fid, 'GeneName,Count\n');
 countgene = countgene';
 fprintf(fid, '%s,%d\n', countgene{:});
 fclose(fid);
 
 % quality bar
-fid = fopen([outdir 'beforeQT_qualitybar.csv'], 'w');
+fid = fopen(fullfile(input.output_directory, 'beforeQT_qualitybar.csv'), 'w');
 fprintf(fid, 'threshold,expected,unexpected,homomer,belowQT\n');
 towrite = [thres',count];
 fprintf(fid,'%.2f,%d,%d,%d,%d\n',towrite');
 fclose(fid);
 
 % details
-fid = fopen([outdir 'beforeQT_details.csv'], 'w');
+fid = fopen(fullfile(input.output_directory, 'beforeQT_details.csv'), 'w');
 fprintf(fid, 'Read,Gene,PosX,PosY,ParentCell,Tile,MinAnchor,MinQuality,MinAlign\n');
-towrite = [uReads(idxNum), Name, num2cell(propsReads)]';
+towrite = [uTags(iRead), Name, num2cell(propsReads)]';
 fprintf(fid, ['%s,%s,', lineformat('%d', size(propsReads,2))], towrite{:});
 fclose(fid);
 
 % mat file
 try
     if input.savemat
-        save([outdir 'beforeQT.mat'], 'toinclude', seqnum, 'oriChannel',...
+        save(fullfile(input.output_directory, 'beforeQT.mat'), 'toinclude', readsNum, 'oriChannel',...
             'propsReads', 'hybMinProps', 'propsPerBase');
     end
 end
@@ -239,7 +238,8 @@ end
 fprintf('Decoding beforeQT finished.\n\n');
 
 %% functions
-   function qualitycheck
+   function [toinclude, propsReads, hybMinProps] = qualitycheck...
+           (input, quality, anchor, alignment, idCell, idBlob, globalpos)
         quality(isnan(quality)) = 0;
         
         [minQ, hybMinQ] = min(quality, [], 2);
