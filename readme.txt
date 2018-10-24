@@ -7,3 +7,5 @@ Except MATLAB, no additional Mathworks product is required.
 Tested on R2016b and R2018a.
 
 InSituSequencing.m is the top-level script.
+
+Example images from the original Nature Methods paper can be found here https://figshare.com/articles/Slide_A_stitched_images/7246952
