@@ -230,7 +230,7 @@ fclose(fid);
 % mat file
 try
     if input.savemat
-        save(fullfile(input.output_directory, 'beforeQT.mat'), 'toinclude', readsNum, 'oriChannel',...
+        save(fullfile(input.output_directory, 'beforeQT.mat'), 'toinclude', 'readsNum', 'originalChannel',...
             'propsReads', 'hybMinProps', 'propsPerBase');
     end
 end
