@@ -146,10 +146,18 @@ for i = 1:length(readorder)
 end
 
 %% sequencing quality
-quality = maxChannel./sumChannel;
+quality = propsPerBase(:,:,1)./propsPerBase(:,:,2);
 [toinclude, propsReads, hybMinProps] = qualitycheck...
     (input, quality, anchor, alignment, iCell, iBlob, globalpos);
 
+% mat file
+mkdir(input.output_directory);
+try
+    if input.savemat
+        save(fullfile(input.output_directory, 'beforeQT.mat'), 'toinclude', 'readsNum', 'originalChannel',...
+            'propsReads', 'hybMinProps', 'propsPerBase');
+    end
+end
 
 % all reads before QT
 readsNum = readsNum(toinclude);
@@ -197,7 +205,6 @@ drawnow;
 toc
 
 disp('writing files..');
-mkdir(input.output_directory);
 
 % code_n_count file
 fid = fopen(fullfile(input.output_directory, 'beforeQT_code_n_count.csv'), 'w');
@@ -227,13 +234,6 @@ towrite = [uTags(iRead), Name, num2cell(propsReads)]';
 fprintf(fid, ['%s,%s,', lineformat('%d', size(propsReads,2))], towrite{:});
 fclose(fid);
 
-% mat file
-try
-    if input.savemat
-        save(fullfile(input.output_directory, 'beforeQT.mat'), 'toinclude', 'readsNum', 'originalChannel',...
-            'propsReads', 'hybMinProps', 'propsPerBase');
-    end
-end
         
 fprintf('Decoding beforeQT finished.\n\n');
 

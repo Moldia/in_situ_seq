@@ -12,6 +12,10 @@ if ischar(plotnameOrdered)
     plotnameOrdered = {plotnameOrdered};
 end
 
+if nargin>2 && ischar(symbols)
+    symbols = {symbols};
+end
+
 % get all child line objects
 gc = get(ah, 'children');
 allChildren = [];
@@ -25,6 +29,10 @@ plotname = {gc(allChildren).DisplayName};
 % get the ones that are required
 clear h
 j = 1;
+if isempty(plotnameOrdered)
+    plotnameOrdered = plotname;
+end
+
 for i = 1:length(plotnameOrdered)
     l = find(strcmp(plotnameOrdered{i}, plotname));
     if ~isempty(l)
@@ -43,6 +51,7 @@ end
 
 % new legend
 legendnames = plotnameOrdered(ismember(plotnameOrdered, plotname));
+legendnames = cellfun(@(v) strrep(v, '\_', '_'), legendnames, 'uni', 0);
 legendnames = cellfun(@(v) strrep(v, '_', '\_'), legendnames, 'uni', 0);
 
 % set all others invisible
