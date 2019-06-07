@@ -39,8 +39,13 @@ for i = 1:length(plotnameOrdered)
         h(j) = gc(l);
         h(j).Visible = 'On';
         if nargin > 2
-            h(j).Marker = symbols{i}(2);
-            h(j).Color = symbols{i}(1);
+            if ischar(symbols{i})
+                h(j).Marker = symbols{i}(2);
+                h(j).Color = symbols{i}(1);
+            else
+                h(j).Marker = symbols{i,2};
+                h(j).Color = symbols{i,1};
+            end
         end
         if nargin > 3
             h(j).MarkerSize = symsize;
