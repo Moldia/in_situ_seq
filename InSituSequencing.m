@@ -41,7 +41,7 @@ run_Plotting_Global_YN = 1;
     % options
     d.check_parent_cell_YN = 0;       
     d.check_alignment_YN = 0;
-        alignment_min_threshold = 1.8;
+        d.alignment_min_threshold = 1.8;
     d.abnormal_sequencing_YN = 0;
         d.sequencing_order = '12340';  % keep the quote marks, same length as
 %----------------------------
