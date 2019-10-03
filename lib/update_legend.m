@@ -15,7 +15,7 @@ end
 if nargin>2 && ischar(symbols)
     symbols = {symbols};
 end
-
+    
 % get all child line objects
 gc = get(ah, 'children');
 allChildren = [];
@@ -25,16 +25,21 @@ for i=1:length(gc)
     end
 end
 plotname = {gc(allChildren).DisplayName};
+plotname = cellfun(@(v) strrep(v, '\', ''), plotname, 'UniformOutput', 0);
 
 % get the ones that are required
 clear h
 j = 1;
+if isnumeric(plotnameOrdered)
+    symsize = plotnameOrdered;
+    plotnameOrdered = [];
+end
 if isempty(plotnameOrdered)
     plotnameOrdered = plotname;
 end
 
 for i = 1:length(plotnameOrdered)
-    l = find(strcmp(plotnameOrdered{i}, plotname));
+    l = find(strcmp(strtrim(plotnameOrdered{i}), plotname));
     if ~isempty(l)
         h(j) = gc(l);
         h(j).Visible = 'On';
@@ -47,8 +52,11 @@ for i = 1:length(plotnameOrdered)
                 h(j).Color = symbols{i,1};
             end
         end
-        if nargin > 3
-            h(j).MarkerSize = symsize;
+        if exist('symsize', 'var')
+            h(j).MarkerSize = symsize(1);
+            try
+                h(j).LineWidth = symsize(2);
+            end
         end
         j=j+1;
     end
@@ -56,7 +64,6 @@ end
 
 % new legend
 legendnames = plotnameOrdered(ismember(plotnameOrdered, plotname));
-legendnames = cellfun(@(v) strrep(v, '\_', '_'), legendnames, 'uni', 0);
 legendnames = cellfun(@(v) strrep(v, '_', '\_'), legendnames, 'uni', 0);
 
 % set all others invisible
