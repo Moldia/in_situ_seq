@@ -1,8 +1,12 @@
 function update_legend(ah, plotnameOrdered, symbols, symsize, legendlocation)
 % update_legend(ah, plotnameOrdered, symbols, symsize, legendlocation)
-% reorder entries in legend and set visibility of line objects according to
+% Reorder entries in legend and set visibility of line objects according to
 % the given names 
-% Xiaoyan, 2018
+% If plotnameOrdered is empty cell, all genes will be hidden
+% If plotnameOrdered is numeric, the number is assumed to be symbol size,
+% and all genes will be plotted
+
+% Xiaoyan, 2019
 
 if nargin < 5
     legendlocation = 'NorthEastOutside';
@@ -32,9 +36,6 @@ clear h
 j = 1;
 if isnumeric(plotnameOrdered)
     symsize = plotnameOrdered;
-    plotnameOrdered = [];
-end
-if isempty(plotnameOrdered)
     plotnameOrdered = plotname;
 end
 
@@ -63,7 +64,7 @@ for i = 1:length(plotnameOrdered)
 end
 
 % new legend
-legendnames = plotnameOrdered(ismember(plotnameOrdered, plotname));
+legendnames = plotnameOrdered(ismember(cellfun(@strtrim, plotnameOrdered, 'UniformOutput', 0), plotname));
 legendnames = cellfun(@(v) strrep(v, '_', '\_'), legendnames, 'uni', 0);
 
 % set all others invisible

@@ -64,9 +64,10 @@ cAnchor = find(ismember(lower(input.channel_order),...
     {'general_stain', 'general_blob', 'anchor_stain', 'anchor_blob',...
     'general stain', 'general blob', 'anchor stain', 'anchor blob',...
     'anchor', 'general'}));
+channels = input.channel_start:input.channel_end;
 if length(cAnchor) == 1
     towrite = [towrite,...
-        repmat([imdirs(:,input.base_start,cAnchor), imfiles], nBases, 1)];
+        repmat([imdirs(:,input.base_start,channels(cAnchor)), imfiles], nBases, 1)];
     header{cAnchor} = 'Spec_blob';
     header = [header, 'General_blob'];
 end
@@ -76,7 +77,7 @@ cNuclei = find(ismember(lower(input.channel_order),...
     {'nuclei', 'dapi', 'hoechst'}));
 if length(cNuclei) == 1
     towrite(:,4+(cNuclei-1)*2+1,:) =...
-        repmat(towrite(1:ntilesX*ntilesY,4+(cNuclei-1)*2+1), nBases, 1);
+        repmat(towrite(1:ntilesX*ntilesY,4+(channels(cNuclei)-1)*2+1), nBases, 1);
 end
 [~, idx] = sort(cell2mat(towrite(:,1)));
 towrite = towrite(idx,:)';
