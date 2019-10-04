@@ -1,3 +1,4 @@
+# In situ seq
 This repository contains scripts for in situ sequencing processing pipeline.
 Mats Nilsson Lab, Stockholm University
 Xiaoyan Qian, 2018
