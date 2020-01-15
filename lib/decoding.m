@@ -148,7 +148,7 @@ end
 %% sequencing quality
 quality = propsPerBase(:,:,1)./propsPerBase(:,:,2);
 [toinclude, propsReads, hybMinProps] = qualitycheck...
-    (input, quality, anchor, alignment, iCell, iBlob, globalpos);
+    (input, quality, propsPerBase(:,:,3), propsPerBase(:,:,4), iCell, iBlob, globalpos);
 
 % mat file
 mkdir(input.output_directory);

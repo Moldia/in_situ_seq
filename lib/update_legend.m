@@ -8,6 +8,8 @@ function update_legend(ah, plotnameOrdered, symbols, symsize, legendlocation)
 
 % Xiaoyan, 2019
 
+temp = axis;
+
 if nargin < 5
     legendlocation = 'NorthEastOutside';
 end
@@ -79,5 +81,6 @@ for i = 1:length(other_h)
     other_h(i).Visible = 'Off';
 end
 
+axis(temp);
 
 end
